@@ -1,4 +1,4 @@
-import csv
+import csv, sys, os
 
 # define block objects, which hold field names and can store data
 class block:
@@ -9,7 +9,7 @@ class block:
         except:
             self.len = len(list)
         self.fields = ['BlockIdentifier', 'UniqueID'] + list[1:self.len]
-        self.data = []
+        self.data = [self.fields]
         self.count = 0
     def count_occurrences(self, file):
         with open(file, 'r') as f:
@@ -17,12 +17,16 @@ class block:
             self.count = reader.count(self.name)
 
 # read layout (metadata) file and returns list of block objects
-def parse_metadata(layout, delim=','):
+def parse_metadata(layout, delim=',', idBlock=1, idPos=2):
     blocks = list()
+    row_counter = 0
     with open(layout) as f:
         reader = csv.reader(f, delimiter=delim)
         for row in reader:
+            row_counter += 1
             blocks.append(block(row))
+            if idBlock == row_counter:
+                del blocks[-1].fields[idPos]
     return(blocks)
 
 # get index for last non-empty element in a list
@@ -33,7 +37,7 @@ def get_last(list):
   return -1
 
 # read main file to isolate blocks and return updated block objects
-def parse_inputString(path, blocks, delim=',', idPos=2, idBlock=1):
+def parse_inputString(path, blocks, labels, delim=',', idPos=2, idBlock=1, verbose = False):
     names = []
     for b in blocks:
         names.append(b.name)
@@ -56,19 +60,41 @@ def parse_inputString(path, blocks, delim=',', idPos=2, idBlock=1):
                     block.data.append([row[i]] + [UniqueID] + row[i+1:i+block.len])
                     i += block.len
                 else:
-                    raise Exception('Error, line %d column %d: Invalid block name or wrong input string format' % (row_counter+1, i+1))
+                    if verbose:
+                        raise Exception(labels['err9'] % (row_counter, i+1))
+                    else:
+                        print(labels['err9'] % (row_counter, i+1))
+                        sys.exit()
     return(blocks)
 
 # write a given block to the given path
-def write_block(block, path):
+def write_block(block, path, labels, overwrite = False):
     if path[-1] == '/':
         filename = path + block.name + '.csv'
     else:
         filename = path + '/' + block.name + '.csv'
-    with open(filename, 'w') as writeFile:
-        writer = csv.writer(writeFile)
-        writer.writerows(block.data)
-    writeFile.close()
+    # checking before overwriting file
+    if os.path.isfile(filename) and overwrite == False:
+        user_input = input(labels['owPrompt'] % block.name)
+        if user_input == 'y' or user_input == 'Y':
+            print(labels['statusWritingFile'] % block.name, end="", flush=True)
+            with open(filename, 'w', newline='') as writeFile:
+                writer = csv.writer(writeFile)
+                writer.writerows(block.data)
+            writeFile.close()
+            print(labels['statusWritingSuccess'])
+            return('Success')
+        else:
+            print(labels['owDenied'])
+            return('Skipped')
+    else:
+        print(labels['statusWritingFile'] % block.name, end="", flush=True)
+        with open(filename, 'w', newline='') as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerows(block.data)
+        writeFile.close()
+        print(labels['statusWritingSuccess'])
+        return('Success')
 
 # check if number of occurrences of a block name matches number of rows in output file
 def check_occurrences(blocks, path, labels):
@@ -76,13 +102,13 @@ def check_occurrences(blocks, path, labels):
     check = False
     for b in blocks:
         b.count_occurrences(path)
-        if b.count != len(b.data):
+        if b.count != len(b.data)-1:
             check = True
             msg += '    ' + b.name + ': Input string has ' + str(b.count) +\
-            ' occurrences; Output file has ' + str(len(b.data)) + ' rows \n'
+            ' occurrences; Output file has ' + str(len(b.data)-1) + ' rows \n'
     msg += labels['checkOccFinal']
     msg += labels['isolateSuccess']
     if check == True:
         print(msg)
-    else:
-        print(labels['isolateSuccess'])
+    # else:
+    #     print(labels['isolateSuccess'])

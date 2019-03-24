@@ -1,5 +1,6 @@
-import argparse, os, sys
-from isolate_function import *
+import argparse, os
+from parse_args_isolate import *
+from isolate_dependencies import *
 
 # Retrieving help and error messages, stored as dictionaries in txt files
 script_dir = os.path.dirname(__file__)
@@ -16,38 +17,32 @@ parser.add_argument('-fd', '--fileDelimiter', default = ",", help = labels['help
 parser.add_argument('-ld', '--layoutDelimiter', default = ",", help = labels['helpMsgLayoutDelim'], metavar='str')
 parser.add_argument('-idp', '--idPosition', default = 2, help = labels['helpMsgIdPos'], type = int, metavar='int')
 parser.add_argument('-idb', '--idBlock', default = 1, help = labels['helpMsgIdBlock'], type = int, metavar='int')
+parser.add_argument('-ow', '--overwrite', action="store_true", help = labels['helpMsgOverwrite'])
 parser.add_argument("-v", "--verbose", action="store_true", help = labels['helpMsgVerb'])
 args = parser.parse_args()
 
-# Basic checks before running the main functions to save processing time
-def validate_args(args):
-    if args.verbose == True:
-        if not os.path.isfile(args.file):
-            raise Exception(labels['err1'])
-        if not os.path.isfile(args.layout):
-            raise Exception(labels['err2'])
-        if not os.path.exists(args.destination):
-            raise Exception(labels['err3'])
-    else:
-        if not os.path.isfile(args.file):
-            print('\n ERROR: ', labels['err1'])
-            sys.exit()
-        if not os.path.isfile(args.layout):
-            print('\n ERROR: ', labels['err2'])
-            sys.exit()
-        if not os.path.exists(args.destination):
-            print('\n ERROR: ', labels['err3'])
-            sys.exit()
-
-
 # Function to group necessary functions for command line run
 def main():
-    blocks = parse_metadata(args.layout, args.layoutDelimiter)
-    blocks = parse_inputString(args.file, blocks, args.fileDelimiter, args.idPosition, args.idBlock)
+    print(labels['statusIsolationStarted'])
+    blocks = parse_metadata(args.layout, args.layoutDelimiter, args.idBlock, args.idPosition)
+    blocks = parse_inputString(args.file, blocks, labels, args.fileDelimiter, args.idPosition, args.idBlock, args.verbose)
+    success = []
+    skipped = []
     for b in blocks:
-        write_block(b, args.destination)
+        res = write_block(b, args.destination, labels, args.overwrite)
+        if res == 'Success':
+            success.append(b.name)
+        else:
+            skipped.append(b.name)
     check_occurrences(blocks, args.file, labels)
+    if len(skipped) == 0:
+        print(labels['isolateSuccessAll'])
+    elif len(success) == 0:
+        print(labels['isolateSkippedAll'])
+    else:
+        print(labels['isolateSuccess'] % success)
+        print(labels['isolateSkipped'] % skipped)
 
 if __name__ == '__main__':
-    validate_args(args)
+    validate_args(args, labels)
     main()

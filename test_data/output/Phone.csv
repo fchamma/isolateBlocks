@@ -1,0 +1,4 @@
+BlockIdentifier,UniqueID,Type,Number,Contact
+Phone,1,home,123456,no
+Phone,2,home,54321,yes
+Phone,2,mobile,9876,no
