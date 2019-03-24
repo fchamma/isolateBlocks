@@ -47,9 +47,9 @@ Phone,2,mobile,9876,no
 """  
 
 User can also define the following optional command line arguments:  
-| -d   | --destination    | str | Destination folder where blocks will be written to.  Defaults to the working directory                   |   |  
-|------|------------------|-----|----------------------------------------------------------------------------------------------------------|---|  
-| -fd  | -fileDelimiter   | str | Character delimiter for main file. Defaults to ','. Pass argument WITHOUT quotes                         |   |  
-| -ld  | -layoutDelimiter | str | Character delimiter for layout file. Defaults to ','. Pass argument WITHOUT quotes                       |   |  
-| -idp | --idPosition     | int | Position of record identifier (UniqueID) within each input string row. Defaults to '2' (second position) |   |  
-|      |                  |     |                                                                                                          |   |  
+| -d   | --destination    | str | Destination folder where blocks will be written to (default: current dir) |   |
+|------|------------------|-----|---------------------------------------------------------------------------|---|
+| -fd  | -fileDelimiter   | str | Character delimiter for main file (default: ',')                          |   |
+| -ld  | -layoutDelimiter | str | Character delimiter for layout file (default: ',')                        |   |
+| -idp | --idPosition     | int | Position of record identifier within each input string row (default: 2)   |   |
+|      |                  |     |                                                                           |   |
