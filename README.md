@@ -6,44 +6,44 @@ The utility can take a single delimited file and write its blocks into several c
 #### isolate.py
 Isolates data blocks from a delimited text file based on a given layout file. The layout (or metadata) file should have one row per existing block, with each block field separated by the delimiter.
 
-E.g. Input file:
-"""
-Header,1,19910131,Acc,bankX,active,Acc,bankY,inactive,Phone,home,123456,no
-Header,2,19690315,Acc,bankZ,inactive,Phone,home,54321,yes,Phone,mobile,9876,no
-Header,3,19491121
+E.g. Input file:\n
+"""\n
+Header,1,19910131,Acc,bankX,active,Acc,bankY,inactive,Phone,home,123456,no\n
+Header,2,19690315,Acc,bankZ,inactive,Phone,home,54321,yes,Phone,mobile,9876,no\n
+Header,3,19491121\n
 """
 
-E.g. Layout file:
-"""
-Header,UniqueID,DOB
-Acc,Bank Name,Status
-Phone,Type,Number,Contact
+E.g. Layout file:\n
+"""\n
+Header,UniqueID,DOB\n
+Acc,Bank Name,Status\n
+Phone,Type,Number,Contact\n
 """
 
 Passing the input and layout files above into the isolate.py function will write 3 files to the destination directory. File names are taken from the block names (1st position of layout file). First position is reserved for block identifier (name) and second position is reserved for UniqueID:
 
-1) Header.csv:
-"""
-BlocksIdentifier,UniqueID,DOB
-Header,1,19910131
-Header,2,19690315
-Header,3,19491121
-"""
-
-2) Acc.csv:
-"""
-BlocksIdentifier,UniqueID,Bank Name,Status
-Acc,1,bankX,active
-Acc,1,bankY,inactive
-Acc,2,bankZ,inactive
+1) Header.csv:\n
+"""\n
+BlocksIdentifier,UniqueID,DOB\n
+Header,1,19910131\n
+Header,2,19690315\n
+Header,3,19491121\n
 """
 
-3) Phone.csv:
+2) Acc.csv:\n
+"""\n
+BlocksIdentifier,UniqueID,Bank Name,Status\n
+Acc,1,bankX,active\n
+Acc,1,bankY,inactive\n
+Acc,2,bankZ,inactive\n
 """
-BlocksIdentifier,UniqueID,Type,Number,Contact
-Phone,1,home,123456,no
-Phone,2,home,54321,yes
-Phone,2,mobile,9876,no
+
+3) Phone.csv:\n
+"""\n
+BlocksIdentifier,UniqueID,Type,Number,Contact\n
+Phone,1,home,123456,no\n
+Phone,2,home,54321,yes\n
+Phone,2,mobile,9876,no\n
 """
 
 User can also define the following optional command line arguments:
