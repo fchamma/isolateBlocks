@@ -13,7 +13,7 @@
 'helpMsgLayout': 'Path of delimited metadata file. Use one block layout per line, with field names separated by delimiters',
 'helpMsgDest': 'Destination folder where blocks will be written to. Defaults to the working directory',
 'helpMsgFileDelim': "Character delimiter for main file. Defaults to ','. Pass argument WITHOUT quotes",
-'helpMsgLayoutDelim': "Character delimiter for main file. Defaults to ','. Pass argument WITHOUT quotes",
+'helpMsgLayoutDelim': "Character delimiter for layout file. Defaults to ','. Pass argument WITHOUT quotes",
 'helpMsgIdPos': "Position of record identifier (UniqueID) within each input string row. Defaults to '2' (second position)",
 'helpMsgIdBlock': "Position of block with record identifier (UniqueID) within layout file. Defaults to '1' (first block), usually the header",
 'helpMsgOverwrite': 'Flag to silently overwrite output file for each block, if they already exist. If omitted, user will be prompted before any overwriting',
