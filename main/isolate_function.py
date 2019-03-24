@@ -1,7 +1,7 @@
 import csv
 
+# define block objects, which hold field names and can store data
 class block:
-# block objects hold field names and can store data
     def __init__(self, list):
         self.name = list[0]
         try:
@@ -10,10 +10,14 @@ class block:
             self.len = len(list)
         self.fields = ['BlockIdentifier', 'UniqueID'] + list[1:self.len]
         self.data = []
+        self.count = 0
+    def count_occurrences(self, file):
+        with open(file, 'r') as f:
+            reader = f.read()
+            self.count = reader.count(self.name)
 
+# read layout (metadata) file and returns list of block objects
 def parse_metadata(layout, delim=','):
-# reads layout (metadata) file
-# returns list of block objects
     blocks = list()
     with open(layout) as f:
         reader = csv.reader(f, delimiter=delim)
@@ -21,16 +25,15 @@ def parse_metadata(layout, delim=','):
             blocks.append(block(row))
     return(blocks)
 
-def get_last(list):
 # get index for last non-empty element in a list
+def get_last(list):
   for i, e in enumerate(reversed(list)):
     if e is not '':
       return len(list) - i - 1
   return -1
 
+# read main file to isolate blocks and return updated block objects
 def parse_inputString(path, blocks, delim=',', idPos=2, idBlock=1):
-# reads main file to isolate blocks from
-# writes each block to a csv file
     names = []
     for b in blocks:
         names.append(b.name)
@@ -56,8 +59,8 @@ def parse_inputString(path, blocks, delim=',', idPos=2, idBlock=1):
                     raise Exception('Error, line %d column %d: Invalid block name or wrong input string format' % (row_counter+1, i+1))
     return(blocks)
 
+# write a given block to the given path
 def write_block(block, path):
-    ## add check for invalid extension
     if path[-1] == '/':
         filename = path + block.name + '.csv'
     else:
@@ -66,3 +69,20 @@ def write_block(block, path):
         writer = csv.writer(writeFile)
         writer.writerows(block.data)
     writeFile.close()
+
+# check if number of occurrences of a block name matches number of rows in output file
+def check_occurrences(blocks, path, labels):
+    msg = labels['checkOccInit']
+    check = False
+    for b in blocks:
+        b.count_occurrences(path)
+        if b.count != len(b.data):
+            check = True
+            msg += '    ' + b.name + ': Input string has ' + str(b.count) +\
+            ' occurrences; Output file has ' + str(len(b.data)) + ' rows \n'
+    msg += labels['checkOccFinal']
+    msg += labels['isolateSuccess']
+    if check == True:
+        print(msg)
+    else:
+        print(labels['isolateSuccess'])

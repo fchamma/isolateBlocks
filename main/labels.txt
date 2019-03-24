@@ -1,0 +1,18 @@
+{
+'err1': 'Input path does not exist or is not a file',
+'err2': 'Layout (metadata) path does not exist or is not a file',
+'err3': 'Destination folder does not exist',
+'err4': 'No write permission on destination folder',
+'helpDescription': 'Isolates given input string file into individual blocks, based on a layout file',
+'helpMsgFile': 'Path of delimited file to be isolated',
+'helpMsgLayout': 'Path of delimited metadata file. Use one block layout per line, with field names separated by delimiters',
+'helpMsgDest': 'Destination folder where blocks will be written to. Defaults to the working directory',
+'helpMsgFileDelim': "Character delimiter for main file. Defaults to ','. Pass argument WITHOUT quotes",
+'helpMsgLayoutDelim': "Character delimiter for main file. Defaults to ','. Pass argument WITHOUT quotes",
+'helpMsgIdPos': "Position of record identifier (UniqueID) within each input string row. Defaults to '2' (second position)",
+'helpMsgIdBlock': "Position of block with record identifier (UniqueID) within layout file. Defaults to '1' (first block), usually the header",
+'helpMsgVerb': 'Increase output verbosity',
+'checkOccInit': " [Warning] Number of blocks parsed differ from number of times block 'name' occurs in the input string for the following blocks: \n",
+'checkOccFinal': '  This usually happens when block names are parsed as regular fields. You may want to check the layout (metadata) file.\n\n',
+'isolateSuccess': 'Blocks were isolated successfully',
+}

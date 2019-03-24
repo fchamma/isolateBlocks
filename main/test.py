@@ -7,7 +7,8 @@ a = parse_metadata(layout)
 b = parse_inputString(path, a)
 
 # print(b)
-for e in b:
-    print (e.data)
+# for e in b:
+#     print (e.data)
 
-write_block(b[0], outpath)
+# write_block(b[0], outpath)
+check_occurrences(b, path)
