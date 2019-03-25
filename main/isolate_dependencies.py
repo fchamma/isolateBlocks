@@ -1,4 +1,5 @@
-import csv, sys, os
+from __future__ import print_function
+import csv, sys, os, io
 
 # define block objects, which hold field names and can store data
 class block:
@@ -67,8 +68,37 @@ def parse_inputString(path, blocks, labels, delim=',', idPos=2, idBlock=1, verbo
                         sys.exit()
     return(blocks)
 
-# write a given block to the given path
-def write_block(block, path, labels, overwrite = False):
+# write a given block to the given path - python 2 version
+def write_block_py2(block, path, labels, overwrite = False):
+    if path[-1] == '/':
+        filename = path + block.name + '.csv'
+    else:
+        filename = path + '/' + block.name + '.csv'
+    # checking before overwriting file
+    if os.path.isfile(filename) and overwrite == False:
+        user_input = raw_input(labels['owPrompt'] % block.name)
+        if user_input == 'y' or user_input == 'Y':
+            print(labels['statusWritingFile'] % block.name, end="")
+            with open(filename, 'w') as writeFile:
+                writer = csv.writer(writeFile)
+                writer.writerows(block.data)
+            writeFile.close()
+            print(labels['statusWritingSuccess'])
+            return('Success')
+        else:
+            print(labels['owDenied'])
+            return('Skipped')
+    else:
+        print(labels['statusWritingFile'] % block.name, end="")
+        with open(filename, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerows(block.data)
+        writeFile.close()
+        print(labels['statusWritingSuccess'])
+        return('Success')
+
+# write a given block to the given path - python 3 version
+def write_block_py3(block, path, labels, overwrite = False):
     if path[-1] == '/':
         filename = path + block.name + '.csv'
     else:
@@ -77,7 +107,7 @@ def write_block(block, path, labels, overwrite = False):
     if os.path.isfile(filename) and overwrite == False:
         user_input = input(labels['owPrompt'] % block.name)
         if user_input == 'y' or user_input == 'Y':
-            print(labels['statusWritingFile'] % block.name, end="", flush=True)
+            print(labels['statusWritingFile'] % block.name, end="")
             with open(filename, 'w', newline='') as writeFile:
                 writer = csv.writer(writeFile)
                 writer.writerows(block.data)
@@ -88,7 +118,7 @@ def write_block(block, path, labels, overwrite = False):
             print(labels['owDenied'])
             return('Skipped')
     else:
-        print(labels['statusWritingFile'] % block.name, end="", flush=True)
+        print(labels['statusWritingFile'] % block.name, end="")
         with open(filename, 'w', newline='') as writeFile:
             writer = csv.writer(writeFile)
             writer.writerows(block.data)

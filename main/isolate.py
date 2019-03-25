@@ -1,4 +1,5 @@
-import argparse, os
+from __future__ import print_function
+import argparse, os, json, io, sys
 from parse_args_isolate import *
 from isolate_dependencies import *
 
@@ -6,7 +7,7 @@ from isolate_dependencies import *
 script_dir = os.path.dirname(__file__)
 labelsPath = os.path.join(script_dir, 'labels.txt')
 with open(labelsPath) as f:
-    labels = eval(f.read())
+    labels = json.loads(f.read())
 
 # Parsing command line arguments
 parser = argparse.ArgumentParser(labels['helpDescription'])
@@ -29,7 +30,10 @@ def main():
     success = []
     skipped = []
     for b in blocks:
-        res = write_block(b, args.destination, labels, args.overwrite)
+        if sys.version_info[0] < 3:
+            res = write_block_py2(b, args.destination, labels, args.overwrite)
+        else:
+            res = write_block_py3(b, args.destination, labels, args.overwrite)
         if res == 'Success':
             success.append(b.name)
         else:

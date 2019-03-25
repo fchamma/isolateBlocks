@@ -1,3 +1,4 @@
+from __future__ import print_function
 import argparse, os, sys
 
 # Check if integer is positive
