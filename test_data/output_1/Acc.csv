@@ -1,0 +1,4 @@
+BlockIdentifier,UniqueID,Bank Name,Status
+Acc,1,bankX,active
+Acc,1,bankY,inactive
+Acc,2,bankZ,inactive

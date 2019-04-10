@@ -19,7 +19,7 @@ def validate_args(args, labels):
             raise Exception(labels['err3'])
         if not os.access(args.destination, os.W_OK):
             raise Exception(labels['err4'])
-        if not is_positive(args.idPosition, threshold=0):
+        if not is_positive(args.idPosition, threshold=1):
             raise Exception(labels['err5'])
         if not is_positive(args.idBlock):
             raise Exception(labels['err6'])
@@ -40,7 +40,7 @@ def validate_args(args, labels):
         if not os.access(args.destination, os.W_OK):
             print('\n ERROR: ', labels['err4'])
             sys.exit()
-        if not is_positive(args.idPosition, threshold=0):
+        if not is_positive(args.idPosition, threshold=1):
             print('\n ERROR: ', labels['err5'])
             sys.exit()
         if not is_positive(args.idBlock):

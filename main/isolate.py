@@ -1,13 +1,15 @@
 from __future__ import print_function
-import argparse, os, json, io, sys
+import argparse, os, json, sys, time
 from parse_args_isolate import *
 from isolate_dependencies import *
+from base import *
 
 # Retrieving help and error messages, stored as dictionaries in txt files
 script_dir = os.path.dirname(__file__)
 labelsPath = os.path.join(script_dir, 'labels.txt')
 with open(labelsPath) as f:
     labels = json.loads(f.read())
+f.close()
 
 # Parsing command line arguments
 parser = argparse.ArgumentParser(labels['helpDescription'])
@@ -19,6 +21,7 @@ parser.add_argument('-ld', '--layoutDelimiter', default = ",", help = labels['he
 parser.add_argument('-idp', '--idPosition', default = 2, help = labels['helpMsgIdPos'], type = int, metavar='int')
 parser.add_argument('-idb', '--idBlock', default = 1, help = labels['helpMsgIdBlock'], type = int, metavar='int')
 parser.add_argument('-ow', '--overwrite', action="store_true", help = labels['helpMsgOverwrite'])
+parser.add_argument('-cc', '--countCheck', action="store_true", help = labels['helpMsgCountCheck'])
 parser.add_argument("-v", "--verbose", action="store_true", help = labels['helpMsgVerb'])
 args = parser.parse_args()
 
@@ -38,7 +41,8 @@ def main():
             success.append(b.name)
         else:
             skipped.append(b.name)
-    check_occurrences(blocks, args.file, labels)
+    if args.countCheck:
+        check_occurrences(blocks, args.file, labels)
     if len(skipped) == 0:
         print(labels['isolateSuccessAll'])
     elif len(success) == 0:
@@ -48,5 +52,7 @@ def main():
         print(labels['isolateSkipped'] % skipped)
 
 if __name__ == '__main__':
+    start_time = time.time()
     validate_args(args, labels)
     main()
+    print(labels['elapsedTime'] % round(time.time() - start_time, 2))
