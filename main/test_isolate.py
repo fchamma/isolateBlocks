@@ -10,10 +10,10 @@ with open(labelsPath) as f:
 f.close()
 
 # arguments from user to be parsed in main()
-exampleFile = '1'
-infile = "./test_data/input_" + exampleFile + ".csv"
-layfile = "./test_data/layout_" + exampleFile + ".csv"
-outfolder = "./test_data/output_" + exampleFile
+exampleFile = 'C'
+infile = "./iscore/input_2017_" + exampleFile + ".csv"
+layfile = "./iscore/layout_iscore_" + exampleFile + ".csv"
+outfolder = "./iscore/output_" + exampleFile
 delim=','
 idPos=2
 idBlock=1
@@ -27,6 +27,7 @@ for b in blocks:
 blocks = parse_inputString(infile, blocks, labels, delim, idPos, idBlock)
 
 for b in blocks:
+    # print(b.data)
     write_block_py2(b, outfolder, labels)
 
 print('time elapsed:', time.time() - t)

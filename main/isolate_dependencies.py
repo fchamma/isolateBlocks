@@ -30,7 +30,7 @@ def parse_inputString(path, blocks, labels, delim=',', idPos=2, \
                 UniqueID = row[idPos-1]
             except:
                 print(labels['err10'] % row_counter)
-                sys.exit()
+                continue
             del row[idPos-1]
             n_fields = get_last(row)
             i = 0
